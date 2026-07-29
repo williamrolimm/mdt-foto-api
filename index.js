@@ -8,6 +8,13 @@ const app = express();
 app.use(cors());
 const upload = multer({ storage: multer.memoryStorage() });
 
+// ========================================================
+// CORREÇÃO: Responde ao "Ping" do MDT avisando que está online
+app.get('*', (req, res) => {
+    res.json({ status: 'ok', online: true, message: 'API Online!' });
+});
+// ========================================================
+
 app.post('/upload', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'Nenhuma imagem enviada.' });
@@ -15,7 +22,6 @@ app.post('/upload', upload.single('image'), async (req, res) => {
         const form = new FormData();
         form.append('file', req.file.buffer, req.file.originalname || 'upload.png');
 
-        // Adiciona ?wait=true para o Discord confirmar o recebimento e devolver o link
         const webhookUrl = process.env.DISCORD_WEBHOOK + '?wait=true';
 
         const discordRes = await axios.post(webhookUrl, form, {
@@ -23,7 +29,6 @@ app.post('/upload', upload.single('image'), async (req, res) => {
         });
 
         if (discordRes.data && discordRes.data.attachments && discordRes.data.attachments.length > 0) {
-            // Devolve exatamente no formato que o painel do seu MDT exige
             res.json({ url: discordRes.data.attachments[0].url });
         } else {
             res.status(500).json({ error: 'Erro ao pegar URL do Discord' });

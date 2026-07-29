@@ -40,24 +40,8 @@ app.post('/upload', upload.any(), async (req, res) => {
             return res.status(500).json({ error: 'URL do Discord vazia.' });
         }
 
-        // RETORNA TODAS AS CHAVES POSSÍVEIS EXISTENTES EM PAINÉIS FIVEM PARA NUNCA MAIS FALHAR
-        return res.json({
-            url: imageUrl,
-            link: imageUrl,
-            image: imageUrl,
-            file: imageUrl,
-            path: imageUrl,
-            imageUrl: imageUrl,
-            img: imageUrl,
-            result: imageUrl,
-            success: true,
-            data: {
-                url: imageUrl,
-                link: imageUrl,
-                image: imageUrl,
-                path: imageUrl
-            }
-        });
+        // DEVOLVE A URL COMO UMA STRING JSON PURA QUE O PAINEL LÊ DIRETAMENTE
+        return res.json(imageUrl);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }

@@ -40,8 +40,10 @@ app.post('/upload', upload.any(), async (req, res) => {
             return res.status(500).json({ error: 'URL do Discord vazia.' });
         }
 
-        // Retorna um JSON universal com TODAS as variações de chaves possíveis do mercado
+        // Retorna um objeto JSON contendo todas as estruturas e chaves possíveis para satisfazer qualquer front-end compilado
         return res.status(200).json({
+            success: true,
+            status: 200,
             url: imageUrl,
             link: imageUrl,
             image: imageUrl,
@@ -50,20 +52,8 @@ app.post('/upload', upload.any(), async (req, res) => {
             imageUrl: imageUrl,
             img: imageUrl,
             result: imageUrl,
-            success: true,
-            filename: imageUrl,
-            fileName: imageUrl,
-            file_url: imageUrl,
-            fileUrl: imageUrl,
-            message: imageUrl,
-            src: imageUrl,
-            source: imageUrl,
-            location: imageUrl,
-            uri: imageUrl,
-            urls: [imageUrl],
-            files: [imageUrl],
-            images: [imageUrl],
             data: {
+                success: true,
                 url: imageUrl,
                 link: imageUrl,
                 image: imageUrl,
@@ -72,8 +62,6 @@ app.post('/upload', upload.any(), async (req, res) => {
                 imageUrl: imageUrl,
                 img: imageUrl,
                 result: imageUrl,
-                filename: imageUrl,
-                fileName: imageUrl,
                 file_url: imageUrl,
                 fileUrl: imageUrl,
                 src: imageUrl,

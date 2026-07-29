@@ -40,10 +40,23 @@ app.post('/upload', upload.any(), async (req, res) => {
             return res.status(500).json({ error: 'URL do Discord vazia.' });
         }
 
-        // DEVOLVE EM FORMATO JSON PERFEITO COM AS DUAS CHAVES MAIS COMUNS DE PAINÉIS REACT
+        // RETORNA TODAS AS CHAVES POSSÍVEIS EXISTENTES EM PAINÉIS FIVEM PARA NUNCA MAIS FALHAR
         return res.json({
             url: imageUrl,
-            link: imageUrl
+            link: imageUrl,
+            image: imageUrl,
+            file: imageUrl,
+            path: imageUrl,
+            imageUrl: imageUrl,
+            img: imageUrl,
+            result: imageUrl,
+            success: true,
+            data: {
+                url: imageUrl,
+                link: imageUrl,
+                image: imageUrl,
+                path: imageUrl
+            }
         });
     } catch (error) {
         return res.status(500).json({ error: error.message });

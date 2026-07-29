@@ -40,8 +40,12 @@ app.post('/upload', upload.any(), async (req, res) => {
             return res.status(500).json({ error: 'URL do Discord vazia.' });
         }
 
-        // DEVOLVE A URL COMO UMA STRING JSON PURA QUE O PAINEL LÊ DIRETAMENTE
-        return res.json(imageUrl);
+        // Retorna um JSON padrão estruturado para que o painel pegue a URL corretamente
+        return res.status(200).json({
+            url: imageUrl,
+            link: imageUrl,
+            status: true
+        });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }

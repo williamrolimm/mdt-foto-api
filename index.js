@@ -15,14 +15,14 @@ app.get('*', (req, res) => {
 app.post('/upload', upload.any(), async (req, res) => {
     try {
         const file = (req.files && req.files[0]) ? req.files[0] : req.file;
-        if (!file) return res.status(400).json({ error: 'Nenhum arquivo enviado.' });
+        if (!file) return res.status(400).send('Nenhum arquivo enviado.');
         
         const form = new FormData();
         form.append('file', file.buffer, file.originalname || 'upload.png');
 
         const webhookUrl = (process.env.DISCORD_WEBHOOK || '') + '?wait=true';
         if (!process.env.DISCORD_WEBHOOK) {
-            return res.status(500).json({ error: 'Webhook não configurado.' });
+            return res.status(500).send('Webhook não configurado.');
         }
 
         const discordRes = await axios.post(webhookUrl, form, {
@@ -37,19 +37,14 @@ app.post('/upload', upload.any(), async (req, res) => {
         }
 
         if (!imageUrl) {
-            return res.status(500).json({ error: 'URL do Discord vazia.' });
+            return res.status(500).send('URL do Discord vazia.');
         }
 
-        // DEVOLVE TODAS AS CHAVES POSSÍVEIS PARA O PAINEL NUNCA MAIS FALHAR
-        return res.json({
-            url: imageUrl,
-            link: imageUrl,
-            image: imageUrl,
-            file: imageUrl,
-            success: true
-        });
+        // DEVOLVE A URL DIRETAMENTE COMO TEXTO PURO QUE O MDT ESPERA
+        res.setHeader('Content-Type', 'text/plain');
+        return res.send(imageUrl);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).send(error.message);
     }
 });
 

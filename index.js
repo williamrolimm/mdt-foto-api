@@ -8,10 +8,16 @@ const app = express();
 app.use(cors());
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Rota de Health Check exigida pelo MDT (retorna status: "ok")
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+});
+
 app.get('*', (req, res) => {
     res.json({ status: 'ok', online: true });
 });
 
+// Rota de Upload formatada milimetricamente para o padrão Mirtin
 app.post('/upload', upload.any(), async (req, res) => {
     try {
         const file = (req.files && req.files[0]) ? req.files[0] : req.file;
@@ -22,7 +28,7 @@ app.post('/upload', upload.any(), async (req, res) => {
 
         const webhookUrl = (process.env.DISCORD_WEBHOOK || '') + '?wait=true';
         if (!process.env.DISCORD_WEBHOOK) {
-            return res.status(500).json({ error: 'Webhook não configurado.' });
+            return res.status(500).json({ error: 'Webhook não configurado no Render.' });
         }
 
         const discordRes = await axios.post(webhookUrl, form, {
@@ -40,40 +46,16 @@ app.post('/upload', upload.any(), async (req, res) => {
             return res.status(500).json({ error: 'URL do Discord vazia.' });
         }
 
-        // Retorna um objeto JSON contendo todas as estruturas e chaves possíveis para satisfazer qualquer front-end compilado
+        // RETORNA EXATAMENTE O FORMATO QUE O CÓDIGO DO SEU MDT EXIGE (fe.files[0].url)
         return res.status(200).json({
-            success: true,
-            status: 200,
-            url: imageUrl,
-            link: imageUrl,
-            image: imageUrl,
-            file: imageUrl,
-            path: imageUrl,
-            imageUrl: imageUrl,
-            img: imageUrl,
-            result: imageUrl,
-            data: {
-                success: true,
-                url: imageUrl,
-                link: imageUrl,
-                image: imageUrl,
-                file: imageUrl,
-                path: imageUrl,
-                imageUrl: imageUrl,
-                img: imageUrl,
-                result: imageUrl,
-                file_url: imageUrl,
-                fileUrl: imageUrl,
-                src: imageUrl,
-                uri: imageUrl
-            },
-            response: {
-                url: imageUrl,
-                link: imageUrl,
-                image: imageUrl
-            }
+            files: [
+                {
+                    url: imageUrl
+                }
+            ]
         });
     } catch (error) {
+        console.error("Erro no upload:", error.message);
         return res.status(500).json({ error: error.message });
     }
 });
